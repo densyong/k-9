@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -45,7 +44,7 @@ public abstract class Store {
     /**
      * Lock objects indexed by account UUID.
      *
-     * @see #getLocalInstance(Account, Application)
+     * @see #getLocalInstance(Account, Context)
      */
     private static ConcurrentMap<String, Object> sAccountLocks = new ConcurrentHashMap<String, Object>();
 
@@ -87,7 +86,7 @@ public abstract class Store {
      * @throws UnavailableStorageException
      *          if not {@link StorageProvider#isReady(Context)}
      */
-    public static LocalStore getLocalInstance(Account account, Application application)
+    public static LocalStore getLocalInstance(Account account, Context context)
             throws MessagingException {
 
         String accountUuid = account.getUuid();
@@ -106,7 +105,7 @@ public abstract class Store {
             if (store == null) {
                 // Creating a LocalStore instance will create or upgrade the database if
                 // necessary. This could take some time.
-                store = new LocalStore(account, application);
+                store = new LocalStore(account, context);
 
                 sLocalStores.put(accountUuid, store);
             }

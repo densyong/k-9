@@ -725,11 +725,11 @@ public class LocalFolder extends Folder implements Serializable {
                                             if (MimeUtil.isMessage(type)) {
                                                 body = new LocalAttachmentMessageBody(
                                                         Uri.parse(contentUri),
-                                                        LocalFolder.this.localStore.mApplication);
+                                                        LocalFolder.this.localStore.context);
                                             } else {
                                                 body = new LocalAttachmentBody(
                                                         Uri.parse(contentUri),
-                                                        LocalFolder.this.localStore.mApplication);
+                                                        LocalFolder.this.localStore.context);
                                             }
                                         }
 
@@ -1294,7 +1294,7 @@ public class LocalFolder extends Folder implements Serializable {
                                 attachments = container.attachments;
                             } else {
                                 ViewableContainer container =
-                                        MimeUtility.extractTextAndAttachments(LocalFolder.this.localStore.mApplication, message);
+                                        MimeUtility.extractTextAndAttachments(LocalFolder.this.localStore.context, message);
 
                                 attachments = container.attachments;
                                 text = container.text;
@@ -1400,7 +1400,7 @@ public class LocalFolder extends Folder implements Serializable {
                         message.buildMimeRepresentation();
 
                         ViewableContainer container =
-                                MimeUtility.extractTextAndAttachments(LocalFolder.this.localStore.mApplication, message);
+                                MimeUtility.extractTextAndAttachments(LocalFolder.this.localStore.context, message);
 
                         List<Part> attachments = container.attachments;
                         String text = container.text;
@@ -1536,7 +1536,7 @@ public class LocalFolder extends Folder implements Serializable {
                             attachmentId = ((LocalAttachmentBodyPart) attachment).getAttachmentId();
                         }
 
-                        final File attachmentDirectory = StorageManager.getInstance(LocalFolder.this.localStore.mApplication).getAttachmentDirectory(LocalFolder.this.localStore.uUid, LocalFolder.this.localStore.database.getStorageProviderId());
+                        final File attachmentDirectory = StorageManager.getInstance(LocalFolder.this.localStore.context).getAttachmentDirectory(LocalFolder.this.localStore.uUid, LocalFolder.this.localStore.database.getStorageProviderId());
                         if (attachment.getBody() != null) {
                             Body body = attachment.getBody();
                             if (body instanceof LocalAttachmentBody) {
@@ -1641,10 +1641,10 @@ public class LocalFolder extends Folder implements Serializable {
                                              attachmentId);
                             if (MimeUtil.isMessage(attachment.getMimeType())) {
                                 attachment.setBody(new LocalAttachmentMessageBody(
-                                        contentUri, LocalFolder.this.localStore.mApplication));
+                                        contentUri, LocalFolder.this.localStore.context));
                             } else {
                                 attachment.setBody(new LocalAttachmentBody(
-                                        contentUri, LocalFolder.this.localStore.mApplication));
+                                        contentUri, LocalFolder.this.localStore.context));
                             }
                             ContentValues cv = new ContentValues();
                             cv.put("content_uri", contentUri != null ? contentUri.toString() : null);
@@ -1879,14 +1879,14 @@ public class LocalFolder extends Folder implements Serializable {
                 Cursor attachmentsCursor = null;
                 try {
                     String accountUuid = mAccount.getUuid();
-                    Context context = LocalFolder.this.localStore.mApplication;
+                    Context context = LocalFolder.this.localStore.context;
 
                     // Get attachment IDs
                     String[] whereArgs = new String[] { Long.toString(messageId) };
                     attachmentsCursor = db.query("attachments", new String[] { "id" },
                             "message_id = ?", whereArgs, null, null, null);
 
-                    final File attachmentDirectory = StorageManager.getInstance(LocalFolder.this.localStore.mApplication)
+                    final File attachmentDirectory = StorageManager.getInstance(LocalFolder.this.localStore.context)
                             .getAttachmentDirectory(LocalFolder.this.localStore.uUid, LocalFolder.this.localStore.database.getStorageProviderId());
 
                     while (attachmentsCursor.moveToNext()) {
