@@ -262,7 +262,7 @@ public class Account implements BaseAccount {
 
     protected Account(Context context) {
         mUuid = UUID.randomUUID().toString();
-        mLocalStorageProviderId = StorageManager.getInstance(K9.app).getDefaultProviderId();
+        mLocalStorageProviderId = StorageManager.getInstance(context).getDefaultProviderId();
         mAutomaticCheckIntervalMinutes = -1;
         mIdleRefreshMinutes = 24;
         mPushPollOnConnect = true;
@@ -1698,7 +1698,7 @@ public class Account implements BaseAccount {
         if (localStorageProviderId == null) {
             return true; // defaults to internal memory
         }
-        return StorageManager.getInstance(K9.app).isReady(localStorageProviderId);
+        return StorageManager.getInstance(context).isReady(localStorageProviderId);
     }
 
     public synchronized boolean isEnabled() {
